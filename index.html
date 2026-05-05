@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Combined Maths — Marks Portal</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-/* ══════════════════════════════════════════
-   !! IMPORTANT: Replace the API_URL below !!
-══════════════════════════════════════════ */
 :root {
   --bg        : #08090f;
   --surface   : #0e111c;
@@ -27,250 +25,159 @@
   --red-bg    : rgba(248,113,113,0.08);
   --blue      : #60a5fa;
   --blue-bg   : rgba(96,165,250,0.08);
+  --purple    : #c084fc;
   --fh        : 'Playfair Display', Georgia, serif;
   --fm        : 'DM Mono', monospace;
   --fb        : 'DM Sans', system-ui, sans-serif;
   --r         : 12px;
   --rs        : 7px;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  background  : var(--bg);
-  color       : var(--cream);
-  font-family : var(--fb);
-  font-size   : 15px;
-  line-height : 1.6;
-  min-height  : 100vh;
-  overflow-x  : hidden;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--cream);font-family:var(--fb);font-size:15px;line-height:1.6;min-height:100vh;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(rgba(212,168,67,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(212,168,67,0.04) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}
+body::after{content:"";position:fixed;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(212,168,67,0.07) 0%,transparent 70%);pointer-events:none;z-index:0}
+.wrapper{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:0 16px 80px}
+
+/* ── Header ── */
+header{text-align:center;padding:52px 0 40px}
+.brand-symbol{display:inline-flex;align-items:center;justify-content:center;width:68px;height:68px;border:1.5px solid var(--border);border-radius:18px;background:var(--surface);margin-bottom:20px;font-family:var(--fm);font-size:28px;color:var(--gold);box-shadow:0 0 40px var(--gold-glow);animation:float 4s ease-in-out infinite}
+.brand-symbol img{width:100%;height:100%;object-fit:contain;border-radius:16px}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+h1.site-title{font-family:var(--fh);font-size:clamp(26px,5vw,40px);font-weight:900;color:var(--cream);letter-spacing:-0.5px;line-height:1.1}
+h1.site-title span{color:var(--gold)}
+.site-subtitle{margin-top:10px;font-size:12px;font-family:var(--fm);color:var(--cream-dim);letter-spacing:2px;text-transform:uppercase}
+.deco-line{display:flex;align-items:center;gap:12px;margin:24px auto 0;max-width:280px;justify-content:center}
+.deco-line::before,.deco-line::after{content:"";flex:1;height:1px;background:var(--border)}
+.deco-line span{font-family:var(--fm);font-size:11px;color:var(--gold-dim);letter-spacing:1.5px}
+
+/* ── Search ── */
+.search-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:28px 24px;margin-bottom:28px;box-shadow:0 24px 80px rgba(0,0,0,.4);animation:fadeUp .6s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.search-label{font-family:var(--fm);font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--gold);margin-bottom:12px;display:block}
+.search-row{display:flex;gap:10px;align-items:stretch}
+.search-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:14px 16px;font-family:var(--fm);font-size:16px;color:var(--cream);outline:none;transition:border-color .2s,box-shadow .2s;letter-spacing:1px;min-width:0}
+.search-input::placeholder{color:rgba(240,230,200,.25);font-size:14px;font-family:var(--fb);letter-spacing:0}
+.search-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-glow)}
+.search-btn{background:var(--gold);color:#08090f;border:none;border-radius:var(--rs);padding:0 24px;font-family:var(--fb);font-size:14px;font-weight:600;cursor:pointer;transition:background .2s,transform .15s,box-shadow .2s;white-space:nowrap;flex-shrink:0}
+.search-btn:hover{background:#e8bc55;box-shadow:0 4px 20px rgba(212,168,67,.3)}
+.search-btn:active{transform:scale(.97)}
+.search-hint{margin-top:10px;font-size:12px;color:var(--cream-dim);font-family:var(--fm)}
+.error-box{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);border-radius:var(--rs);padding:12px 16px;color:var(--red);font-family:var(--fm);font-size:13px;margin-top:14px;display:none}
+
+/* ── Spinner ── */
+.spinner-wrap{display:none;justify-content:center;align-items:center;padding:48px;flex-direction:column;gap:14px}
+.spinner{width:34px;height:34px;border:2px solid var(--border);border-top:2px solid var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner-text{font-family:var(--fm);font-size:12px;color:var(--cream-dim);letter-spacing:1.5px;text-transform:uppercase}
+
+/* ── Section label ── */
+.section-label{font-family:var(--fm);font-size:10px;text-transform:uppercase;letter-spacing:2.5px;color:var(--gold-dim);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.section-label::after{content:"";flex:1;height:1px;background:var(--border)}
+
+/* ── Student banner ── */
+#results{display:none;animation:fadeUp .5s ease both}
+.student-banner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+.student-name{font-family:var(--fh);font-size:clamp(20px,4vw,30px);font-weight:700}
+.student-name small{display:block;font-family:var(--fm);font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:2px;font-weight:400;margin-bottom:4px}
+.dl-btn{display:inline-flex;align-items:center;gap:7px;background:transparent;border:1.5px solid var(--gold);color:var(--gold);border-radius:var(--rs);padding:9px 18px;font-family:var(--fb);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.dl-btn:hover{background:var(--gold);color:#08090f;box-shadow:0 4px 20px rgba(212,168,67,.3)}
+
+/* ── Quote card ── */
+.quote-card{background:linear-gradient(135deg,#0e111c,#141828);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--r);padding:20px 24px;margin-bottom:20px;position:relative;overflow:hidden}
+.quote-card::before{content:"❝";position:absolute;top:-10px;right:16px;font-size:80px;color:var(--gold-glow);font-family:Georgia,serif;line-height:1}
+.quote-text{font-family:var(--fh);font-size:15px;font-style:italic;color:var(--cream);line-height:1.7;position:relative;z-index:1}
+.quote-label{font-family:var(--fm);font-size:10px;color:var(--gold-dim);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
+
+/* ── Marks panel ── */
+.marks-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:20px}
+.marks-topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);gap:10px;flex-wrap:wrap}
+.paper-title{font-family:var(--fh);font-size:16px;font-weight:700}
+.paper-date{font-family:var(--fm);font-size:12px;color:var(--cream-dim)}
+.badge-latest{font-family:var(--fm);font-size:11px;padding:3px 10px;border-radius:50px;background:var(--gold-glow);border:1px solid var(--gold);color:var(--gold)}
+
+/* ── Score grid ── */
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
+.score-cell{background:var(--surface);padding:22px 16px;text-align:center}
+.score-value{font-family:var(--fm);font-size:30px;font-weight:500;color:var(--cream);line-height:1}
+.score-max{font-size:14px;color:var(--cream-dim)}
+.score-pct{font-family:var(--fm);font-size:12px;color:var(--gold-dim);margin-top:4px}
+.score-bar{width:100%;height:3px;background:var(--surface2);border-radius:2px;margin-top:8px;overflow:hidden}
+.score-bar-fill{height:3px;border-radius:2px;background:linear-gradient(90deg,var(--gold),#e8bc55);transition:width 1s cubic-bezier(.25,.8,.25,1)}
+.score-label{font-family:var(--fm);font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--cream-dim);margin-top:8px}
+
+/* ── Class comparison row ── */
+.class-compare{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-top:1px solid var(--border)}
+.cc-cell{background:var(--surface2);padding:12px 16px;text-align:center}
+.cc-val{font-family:var(--fm);font-size:15px;color:var(--blue)}
+.cc-val.you{color:var(--gold)}
+.cc-val.top{color:var(--green)}
+.cc-lbl{font-family:var(--fm);font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--cream-dim);margin-top:3px}
+.rank-badge{display:inline-flex;align-items:center;gap:6px;background:var(--gold-glow);border:1px solid var(--gold);border-radius:50px;padding:6px 14px;font-family:var(--fm);font-size:12px;color:var(--gold);margin-top:12px}
+
+/* ── Review section ── */
+.review-section{padding:20px;display:grid;gap:14px}
+.review-block{background:var(--surface2);border-radius:var(--rs);padding:16px 18px;border-left:3px solid transparent}
+.review-block.good{border-color:var(--green)}
+.review-block.improve{border-color:var(--red)}
+.review-block.notes{border-color:var(--blue)}
+.review-block-title{font-family:var(--fm);font-size:10px;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.review-block.good .review-block-title{color:var(--green)}
+.review-block.improve .review-block-title{color:var(--red)}
+.review-block.notes .review-block-title{color:var(--blue)}
+.tags-wrap{display:flex;flex-wrap:wrap;gap:7px}
+.tag{font-family:var(--fm);font-size:12px;padding:4px 11px;border-radius:50px}
+.tag-good{background:var(--green-bg);color:var(--green);border:1px solid rgba(74,222,128,.25)}
+.tag-bad{background:var(--red-bg);color:var(--red);border:1px solid rgba(248,113,113,.25)}
+.review-text{color:var(--cream);font-size:14px;line-height:1.75}
+
+/* ── Charts grid ── */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.chart-card.full{grid-column:1/-1}
+.chart-title{font-family:var(--fm);font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--gold-dim);margin-bottom:16px}
+.chart-canvas-wrap{position:relative;width:100%}
+
+/* ── Paper analysis table ── */
+.qa-table{width:100%;border-collapse:collapse;font-family:var(--fm);font-size:12px}
+.qa-table thead tr{border-bottom:1px solid var(--border)}
+.qa-table th{text-transform:uppercase;letter-spacing:1.5px;font-size:9px;color:var(--gold-dim);padding:10px 12px;text-align:left;font-weight:500}
+.qa-table td{padding:11px 12px;color:var(--cream-dim);border-bottom:1px solid rgba(212,168,67,.05)}
+.qa-table tr:last-child td{border-bottom:none}
+.qa-table .num{color:var(--cream);font-family:var(--fm)}
+.attempt-bar-wrap{display:flex;align-items:center;gap:8px}
+.attempt-bar{flex:1;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;min-width:60px}
+.attempt-bar-fill{height:6px;border-radius:3px;background:linear-gradient(90deg,var(--blue),#818cf8)}
+.correct-rate{font-size:11px}
+.rate-high{color:var(--green)}
+.rate-mid{color:var(--gold)}
+.rate-low{color:var(--red)}
+
+/* ── History table ── */
+.history-table{width:100%;border-collapse:collapse;font-family:var(--fm);font-size:13px}
+.history-table thead tr{border-bottom:1px solid var(--border)}
+.history-table th{text-transform:uppercase;letter-spacing:1.5px;font-size:10px;color:var(--gold-dim);padding:11px 14px;text-align:left;font-weight:500}
+.history-table td{padding:13px 14px;color:var(--cream-dim);border-bottom:1px solid rgba(212,168,67,.05);transition:color .2s}
+.history-table tr:hover td{color:var(--cream);background:rgba(212,168,67,.03);cursor:pointer}
+.history-table .num{color:var(--cream)}
+
+/* ── No stats notice ── */
+.no-stats{text-align:center;padding:32px;font-family:var(--fm);font-size:12px;color:var(--cream-dim);letter-spacing:1px}
+
+/* ── Responsive ── */
+@media(max-width:640px){
+  .charts-grid{grid-template-columns:1fr}
+  .chart-card.full{grid-column:auto}
+  .score-grid{grid-template-columns:repeat(3,1fr)}
+  .class-compare{grid-template-columns:repeat(3,1fr)}
+  .search-row{flex-direction:column}
+  .search-btn{padding:14px}
+  .history-table th:nth-child(3),.history-table td:nth-child(3),
+  .history-table th:nth-child(4),.history-table td:nth-child(4){display:none}
 }
-body::before {
-  content         : "";
-  position        : fixed;
-  inset           : 0;
-  background-image: linear-gradient(rgba(212,168,67,0.04) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(212,168,67,0.04) 1px, transparent 1px);
-  background-size : 48px 48px;
-  pointer-events  : none;
-  z-index         : 0;
-}
-body::after {
-  content        : "";
-  position       : fixed;
-  top            : -200px;
-  left           : 50%;
-  transform      : translateX(-50%);
-  width          : 800px;
-  height         : 800px;
-  background     : radial-gradient(circle, rgba(212,168,67,0.07) 0%, transparent 70%);
-  pointer-events : none;
-  z-index        : 0;
-}
-.wrapper {
-  position  : relative;
-  z-index   : 1;
-  max-width : 860px;
-  margin    : 0 auto;
-  padding   : 0 16px 80px;
-}
-/* ─── Header ─────────────────────────────── */
-header { text-align: center; padding: 52px 0 40px; }
-.brand-symbol {
-  display         : inline-flex;
-  align-items     : center;
-  justify-content : center;
-  width           : 68px;
-  height          : 68px;
-  border          : 1.5px solid var(--border);
-  border-radius   : 18px;
-  background      : var(--surface);
-  margin-bottom   : 20px;
-  font-family     : var(--fm);
-  font-size       : 28px;
-  color           : var(--gold);
-  box-shadow      : 0 0 40px var(--gold-glow);
-  animation       : float 4s ease-in-out infinite;
-}
-@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-h1.site-title {
-  font-family   : var(--fh);
-  font-size     : clamp(26px,5vw,40px);
-  font-weight   : 900;
-  color         : var(--cream);
-  letter-spacing: -0.5px;
-  line-height   : 1.1;
-}
-h1.site-title span { color: var(--gold); }
-.site-subtitle {
-  margin-top    : 10px;
-  font-size     : 12px;
-  font-family   : var(--fm);
-  color         : var(--cream-dim);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-.deco-line {
-  display        : flex;
-  align-items    : center;
-  gap            : 12px;
-  margin         : 24px auto 0;
-  max-width      : 280px;
-  justify-content: center;
-}
-.deco-line::before,.deco-line::after { content:""; flex:1; height:1px; background:var(--border); }
-.deco-line span { font-family:var(--fm); font-size:11px; color:var(--gold-dim); letter-spacing:1.5px; }
-/* ─── Search card ────────────────────────── */
-.search-card {
-  background    : var(--surface);
-  border        : 1px solid var(--border);
-  border-radius : var(--r);
-  padding       : 28px 24px;
-  margin-bottom : 28px;
-  box-shadow    : 0 24px 80px rgba(0,0,0,.4);
-  animation     : fadeUp .6s ease both;
-}
-@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-.search-label {
-  font-family   : var(--fm);
-  font-size     : 11px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color         : var(--gold);
-  margin-bottom : 12px;
-  display       : block;
-}
-.search-row { display:flex; gap:10px; align-items:stretch; }
-.search-input {
-  flex          : 1;
-  background    : var(--surface2);
-  border        : 1px solid var(--border);
-  border-radius : var(--rs);
-  padding       : 14px 16px;
-  font-family   : var(--fm);
-  font-size     : 16px;
-  color         : var(--cream);
-  outline       : none;
-  transition    : border-color .2s, box-shadow .2s;
-  letter-spacing: 1px;
-  min-width     : 0;
-}
-.search-input::placeholder { color:rgba(240,230,200,.25); font-size:14px; font-family:var(--fb); letter-spacing:0; }
-.search-input:focus { border-color:var(--gold); box-shadow:0 0 0 3px var(--gold-glow); }
-.search-btn {
-  background    : var(--gold);
-  color         : #08090f;
-  border        : none;
-  border-radius : var(--rs);
-  padding       : 0 24px;
-  font-family   : var(--fb);
-  font-size     : 14px;
-  font-weight   : 600;
-  cursor        : pointer;
-  transition    : background .2s, transform .15s, box-shadow .2s;
-  white-space   : nowrap;
-  flex-shrink   : 0;
-}
-.search-btn:hover { background:#e8bc55; box-shadow:0 4px 20px rgba(212,168,67,.3); }
-.search-btn:active { transform:scale(.97); }
-.search-hint { margin-top:10px; font-size:12px; color:var(--cream-dim); font-family:var(--fm); }
-.error-box {
-  background    : rgba(248,113,113,.08);
-  border        : 1px solid rgba(248,113,113,.3);
-  border-radius : var(--rs);
-  padding       : 12px 16px;
-  color         : var(--red);
-  font-family   : var(--fm);
-  font-size     : 13px;
-  margin-top    : 14px;
-  display       : none;
-}
-/* ─── Spinner ────────────────────────────── */
-.spinner-wrap { display:none; justify-content:center; align-items:center; padding:48px; flex-direction:column; gap:14px; }
-.spinner { width:34px; height:34px; border:2px solid var(--border); border-top:2px solid var(--gold); border-radius:50%; animation:spin .8s linear infinite; }
-@keyframes spin { to{transform:rotate(360deg)} }
-.spinner-text { font-family:var(--fm); font-size:12px; color:var(--cream-dim); letter-spacing:1.5px; text-transform:uppercase; }
-/* ─── Results ────────────────────────────── */
-#results { display:none; animation:fadeUp .5s ease both; }
-.student-banner { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:22px; }
-.student-name { font-family:var(--fh); font-size:clamp(20px,4vw,30px); font-weight:700; }
-.student-name small { display:block; font-family:var(--fm); font-size:11px; color:var(--gold); text-transform:uppercase; letter-spacing:2px; font-weight:400; margin-bottom:4px; }
-.dl-btn {
-  display      : inline-flex;
-  align-items  : center;
-  gap          : 7px;
-  background   : transparent;
-  border       : 1.5px solid var(--gold);
-  color        : var(--gold);
-  border-radius: var(--rs);
-  padding      : 9px 18px;
-  font-family  : var(--fb);
-  font-size    : 13px;
-  font-weight  : 600;
-  cursor       : pointer;
-  transition   : all .2s;
-}
-.dl-btn:hover { background:var(--gold); color:#08090f; box-shadow:0 4px 20px rgba(212,168,67,.3); }
-.section-label {
-  font-family   : var(--fm);
-  font-size     : 10px;
-  text-transform: uppercase;
-  letter-spacing: 2.5px;
-  color         : var(--gold-dim);
-  margin-bottom : 14px;
-  display       : flex;
-  align-items   : center;
-  gap           : 10px;
-}
-.section-label::after { content:""; flex:1; height:1px; background:var(--border); }
-/* ─── Marks panel ────────────────────────── */
-.marks-panel { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); overflow:hidden; margin-bottom:20px; }
-.marks-topbar { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; border-bottom:1px solid var(--border); gap:10px; flex-wrap:wrap; }
-.paper-title { font-family:var(--fh); font-size:16px; font-weight:700; }
-.paper-date  { font-family:var(--fm); font-size:12px; color:var(--cream-dim); }
-.badge-latest { font-family:var(--fm); font-size:11px; padding:3px 10px; border-radius:50px; background:var(--gold-glow); border:1px solid var(--gold); color:var(--gold); }
-.score-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); }
-.score-cell { background:var(--surface); padding:24px 16px; text-align:center; }
-.score-value { font-family:var(--fm); font-size:32px; font-weight:500; color:var(--cream); line-height:1; }
-.score-max   { font-size:15px; color:var(--cream-dim); }
-.score-pct   { font-family:var(--fm); font-size:12px; color:var(--gold-dim); margin-top:4px; }
-.score-bar   { width:100%; height:3px; background:var(--surface2); border-radius:2px; margin-top:8px; overflow:hidden; }
-.score-bar-fill { height:3px; border-radius:2px; background:linear-gradient(90deg,var(--gold),#e8bc55); transition:width 1s cubic-bezier(.25,.8,.25,1); }
-.score-label { font-family:var(--fm); font-size:10px; text-transform:uppercase; letter-spacing:2px; color:var(--cream-dim); margin-top:8px; }
-.z-positive { color:var(--green) !important; }
-.z-negative { color:var(--red) !important; }
-.review-section { padding:20px; display:grid; gap:14px; }
-.review-block { background:var(--surface2); border-radius:var(--rs); padding:16px 18px; border-left:3px solid transparent; }
-.review-block.good    { border-color:var(--green); }
-.review-block.improve { border-color:var(--red); }
-.review-block.notes   { border-color:var(--blue); }
-.review-block-title { font-family:var(--fm); font-size:10px; text-transform:uppercase; letter-spacing:2px; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
-.review-block.good    .review-block-title { color:var(--green); }
-.review-block.improve .review-block-title { color:var(--red); }
-.review-block.notes   .review-block-title { color:var(--blue); }
-.tags-wrap { display:flex; flex-wrap:wrap; gap:7px; }
-.tag { font-family:var(--fm); font-size:12px; padding:4px 11px; border-radius:50px; }
-.tag-good { background:var(--green-bg); color:var(--green); border:1px solid rgba(74,222,128,.25); }
-.tag-bad  { background:var(--red-bg);   color:var(--red);   border:1px solid rgba(248,113,113,.25); }
-.review-text { color:var(--cream); font-size:14px; line-height:1.75; }
-/* ─── History table ──────────────────────── */
-.history-table { width:100%; border-collapse:collapse; font-family:var(--fm); font-size:13px; }
-.history-table thead tr { border-bottom:1px solid var(--border); }
-.history-table th { text-transform:uppercase; letter-spacing:1.5px; font-size:10px; color:var(--gold-dim); padding:11px 14px; text-align:left; font-weight:500; }
-.history-table td { padding:13px 14px; color:var(--cream-dim); border-bottom:1px solid rgba(212,168,67,.05); transition:color .2s; }
-.history-table tr:hover td { color:var(--cream); background:rgba(212,168,67,.03); cursor:pointer; }
-.history-table .num { color:var(--cream); }
-/* ─── Responsive ─────────────────────────── */
-@media (max-width:600px) {
-  .score-grid { grid-template-columns:repeat(3,1fr); }
-  .search-row { flex-direction:column; }
-  .search-btn { padding:14px; }
-  .history-table th:nth-child(3),
-  .history-table td:nth-child(3),
-  .history-table th:nth-child(4),
-  .history-table td:nth-child(4) { display:none; }
-}
-/* ─── Footer ─────────────────────────────── */
-footer { text-align:center; margin-top:50px; padding-top:22px; border-top:1px solid var(--border); font-family:var(--fm); font-size:11px; color:rgba(240,230,200,.2); letter-spacing:1px; }
+
+/* ── Footer ── */
+footer{text-align:center;margin-top:50px;padding-top:22px;border-top:1px solid var(--border);font-family:var(--fm);font-size:11px;color:rgba(240,230,200,.2);letter-spacing:1px}
 </style>
 </head>
 <body>
@@ -278,8 +185,8 @@ footer { text-align:center; margin-top:50px; padding-top:22px; border-top:1px so
 
   <header>
     <img src="logo.png" class="brand-symbol" style="padding:8px; object-fit:contain;" />
-    <h1 class="site-title">Arman Teaches <span>Math</span></h1>
-    <p class="site-subtitle">ATM by MathLab</p>
+    <h1 class="site-title">Arman Teaches <span>Maths</span></h1>
+    <p class="site-subtitle">Performance Review Portal</p>
     <div class="deco-line"><span>A/L · 2027</span></div>
   </header>
 
@@ -288,10 +195,10 @@ footer { text-align:center; margin-top:50px; padding-top:22px; border-top:1px so
     <div class="search-row">
       <input type="text" id="queryInput" class="search-input"
              placeholder="Enter your NIC or Index Number…"
-             autocomplete="off" spellcheck="false" />
+             autocomplete="off" spellcheck="false"/>
       <button class="search-btn" id="searchBtn" onclick="lookup()">Search</button>
     </div>
-    <p class="search-hint">e.g. 200312345678 &nbsp;or&nbsp; ML*00***</p>
+    <p class="search-hint">e.g. 200312345678 &nbsp;or&nbsp; MLD0001</p>
     <div class="error-box" id="errorBox"></div>
   </div>
 
@@ -301,6 +208,8 @@ footer { text-align:center; margin-top:50px; padding-top:22px; border-top:1px so
   </div>
 
   <div id="results">
+
+    <!-- Student banner -->
     <div class="student-banner">
       <div class="student-name">
         <small>Results for</small>
@@ -316,9 +225,78 @@ footer { text-align:center; margin-top:50px; padding-top:22px; border-top:1px so
       </button>
     </div>
 
-    <div class="section-label">Current Paper</div>
+    <!-- Motivational quote -->
+    <div class="quote-card" id="quoteCard" style="display:none">
+      <div class="quote-label">✦ &nbsp;Your Message</div>
+      <div class="quote-text" id="quoteText"></div>
+    </div>
+
+    <!-- Current paper -->
+    <div class="section-label">Latest Paper</div>
     <div id="marksPanel"></div>
 
+    <!-- Charts -->
+    <div class="charts-grid" id="chartsGrid" style="display:none">
+
+      <!-- Performance trend -->
+      <div class="chart-card full">
+        <div class="chart-title">📈 &nbsp;Your Performance Across Papers</div>
+        <div class="chart-canvas-wrap" style="height:220px">
+          <canvas id="trendChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Class comparison -->
+      <div class="chart-card">
+        <div class="chart-title">📊 &nbsp;Latest Paper — Class Comparison</div>
+        <div class="chart-canvas-wrap" style="height:200px">
+          <canvas id="compareChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Part A vs Part B -->
+      <div class="chart-card">
+        <div class="chart-title">⚖️ &nbsp;Part A vs Part B (All Papers)</div>
+        <div class="chart-canvas-wrap" style="height:200px">
+          <canvas id="partsChart"></canvas>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Paper analysis -->
+    <div id="paperAnalysisSection" style="display:none">
+      <div class="section-label">Overall Paper Analysis</div>
+      <div class="marks-panel">
+
+        <!-- Summary stats row -->
+        <div id="paperSummaryRow" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-bottom:1px solid var(--border)"></div>
+
+        <!-- Per-question bar chart -->
+        <div style="padding:20px">
+          <div class="chart-title">📐 &nbsp;Question-by-Question Class Performance</div>
+          <div class="chart-canvas-wrap" style="height:240px">
+            <canvas id="questionChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Per-question table -->
+        <div style="overflow-x:auto">
+          <table class="qa-table" id="qaTable">
+            <thead><tr>
+              <th>Q</th><th>Topic</th><th>Max</th>
+              <th>Attempted</th><th>Correct</th><th>Avg Score</th><th>Success Rate</th>
+            </tr></thead>
+            <tbody id="qaBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Review (strong/improve/tutor) -->
+    <div id="reviewPanel"></div>
+
+    <!-- History -->
     <div id="historySection" style="display:none">
       <div class="section-label" style="margin-top:28px">All Papers History</div>
       <div class="marks-panel">
@@ -326,31 +304,37 @@ footer { text-align:center; margin-top:50px; padding-top:22px; border-top:1px so
           <thead><tr>
             <th>Paper</th><th>Date</th>
             <th>Part A</th><th>Part B</th>
-            <th>Total</th><th>%</th>
-            <th>Grade</th>
+            <th>Total</th><th>%</th><th>Grade</th>
           </tr></thead>
           <tbody id="historyBody"></tbody>
         </table>
       </div>
     </div>
-  </div>
 
-  <footer>© 2025 Combined Maths Portal &nbsp;·&nbsp; All results are official</footer>
+  </div><!-- /results -->
+
+  <footer>© 2025 Combined Maths Portal v2 &nbsp;·&nbsp; All results are official</footer>
 </div>
 
 <script>
-// ══════════════════════════════════════════════
+// ════════════════════════════════════════════════
 //  !! PASTE YOUR APPS SCRIPT WEB APP URL HERE !!
-// ══════════════════════════════════════════════
+// ════════════════════════════════════════════════
 const API_URL = "https://script.google.com/macros/s/AKfycbxfgvSNHv64L7XduW7wU4PUquuA1msGQqde0wAqwrT1TwZPkfuUAOWHTbK8TdVUEVFCpw/exec";
-// Example:
-// const API_URL = "https://script.google.com/macros/s/AKfycb.../exec";
-// ══════════════════════════════════════════════
+// ════════════════════════════════════════════════
 
 let allRecords   = [];
+let allData      = null;
 let currentQuery = "";
+let chartInstances = {};
 
-// ── Lookup ────────────────────────────────────
+// Chart.js global defaults
+Chart.defaults.color          = "rgba(240,230,200,0.55)";
+Chart.defaults.borderColor    = "rgba(212,168,67,0.12)";
+Chart.defaults.font.family    = "'DM Mono', monospace";
+Chart.defaults.font.size      = 11;
+
+// ── Lookup ─────────────────────────────────────
 async function lookup() {
   const q = document.getElementById("queryInput").value.trim();
   if (!q) return;
@@ -360,9 +344,10 @@ async function lookup() {
   document.getElementById("results").style.display = "none";
   showSpinner(true);
   setSearchBtn(true);
+  destroyCharts();
 
   try {
-    const res  = await fetch(`${API_URL}?action=getData&query=${encodeURIComponent(q)}`);
+    const res  = await fetch(`${API_URL}?action=getFullData&query=${encodeURIComponent(q)}`);
     const data = await res.json();
     onData(data);
   } catch (err) {
@@ -382,22 +367,43 @@ function onData(data) {
 
   if (data.error) { setError(data.error); return; }
 
+  allData    = data;
   allRecords = data.records;
+
   document.getElementById("studentName").textContent = data.student;
+
+  // Quote
+  if (data.quote) {
+    document.getElementById("quoteText").textContent = data.quote;
+    document.getElementById("quoteCard").style.display = "block";
+  }
+
   renderMarksPanel(allRecords[0], true);
+  renderReview(allRecords[0]);
   renderHistory(allRecords);
+
+  // Charts
+  document.getElementById("chartsGrid").style.display = "grid";
+  setTimeout(() => {
+    renderTrendChart(allRecords);
+    renderCompareChart(allRecords[0]);
+    renderPartsChart(allRecords);
+  }, 100);
+
+  // Paper analysis
+  if (data.paperStats && data.paperStats.questions && data.paperStats.questions.length > 0) {
+    renderPaperAnalysis(data.paperStats, data.classStats);
+  }
+
   document.getElementById("results").style.display = "block";
-  document.getElementById("results").scrollIntoView({ behavior:"smooth", block:"start" });
+  document.getElementById("results").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-// ── Marks panel ──────────────────────────────
+// ── Marks panel ────────────────────────────────
 function renderMarksPanel(rec, isLatest) {
-  const pA = Math.round((rec.partA  / rec.maxA)     * 100);
-  const pB = Math.round((rec.partB  / rec.maxB)     * 100);
-  const pT = Math.round((rec.total  / rec.maxTotal) * 100);
-
-  const gTags = rec.good.split(",").map(t => `<span class="tag tag-good">${t.trim()}</span>`).join("");
-  const bTags = rec.improve.split(",").map(t => `<span class="tag tag-bad">${t.trim()}</span>`).join("");
+  const pA = pct(rec.partA, rec.maxA);
+  const pB = pct(rec.partB, rec.maxB);
+  const pT = pct(rec.total, rec.maxTotal);
 
   document.getElementById("marksPanel").innerHTML = `
   <div class="marks-panel" style="animation:fadeUp .4s ease both">
@@ -428,20 +434,24 @@ function renderMarksPanel(rec, isLatest) {
         <div class="score-label">Total</div>
       </div>
     </div>
-    <div class="review-section">
-      <div class="review-block good">
-        <div class="review-block-title">✓ &nbsp;Strong Areas</div>
-        <div class="tags-wrap">${gTags}</div>
+    <div class="class-compare">
+      <div class="cc-cell">
+        <div class="cc-val you">${rec.total}</div>
+        <div class="cc-lbl">Your Score</div>
       </div>
-      <div class="review-block improve">
-        <div class="review-block-title">↑ &nbsp;Areas to Improve</div>
-        <div class="tags-wrap">${bTags}</div>
+      <div class="cc-cell">
+        <div class="cc-val">${rec.classAverage || "—"}</div>
+        <div class="cc-lbl">Class Avg</div>
       </div>
-      <div class="review-block notes">
-        <div class="review-block-title">✎ &nbsp;Tutor Review</div>
-        <p class="review-text">${rec.review}</p>
+      <div class="cc-cell">
+        <div class="cc-val top">${rec.classHighest || "—"}</div>
+        <div class="cc-lbl">Highest</div>
       </div>
     </div>
+    ${rec.studentRank && rec.classSize ? `
+    <div style="padding:12px 20px;border-top:1px solid var(--border)">
+      <span class="rank-badge">🏆 &nbsp;Rank ${rec.studentRank} of ${rec.classSize} students</span>
+    </div>` : ""}
   </div>`;
 
   requestAnimationFrame(() => setTimeout(() => {
@@ -449,11 +459,36 @@ function renderMarksPanel(rec, isLatest) {
   }, 80));
 }
 
-// ── History table ─────────────────────────────
+// ── Review block ───────────────────────────────
+function renderReview(rec) {
+  const gTags = rec.good.split(",").map(t => `<span class="tag tag-good">${t.trim()}</span>`).join("");
+  const bTags = rec.improve.split(",").map(t => `<span class="tag tag-bad">${t.trim()}</span>`).join("");
+  document.getElementById("reviewPanel").innerHTML = `
+  <div style="margin-bottom:20px">
+    <div class="section-label">Tutor Feedback</div>
+    <div class="marks-panel">
+      <div class="review-section">
+        <div class="review-block good">
+          <div class="review-block-title">✓ &nbsp;Strong Areas</div>
+          <div class="tags-wrap">${gTags}</div>
+        </div>
+        <div class="review-block improve">
+          <div class="review-block-title">↑ &nbsp;Areas to Improve</div>
+          <div class="tags-wrap">${bTags}</div>
+        </div>
+        <div class="review-block notes">
+          <div class="review-block-title">✎ &nbsp;Tutor Review</div>
+          <p class="review-text">${rec.review}</p>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── History table ──────────────────────────────
 function renderHistory(records) {
   if (records.length <= 1) { document.getElementById("historySection").style.display = "none"; return; }
   document.getElementById("historySection").style.display = "block";
-  const z = r => { const n=parseFloat(r.zScore); return n>0?"z-positive":n<0?"z-negative":""; };
   document.getElementById("historyBody").innerHTML = records.map((r,i) => `
     <tr onclick="selectPaper(${i})">
       <td>${r.paper}${i===0?' <span class="badge-latest">latest</span>':""}</td>
@@ -461,17 +496,222 @@ function renderHistory(records) {
       <td class="num">${r.partA}/${r.maxA}</td>
       <td class="num">${r.partB}/${r.maxB}</td>
       <td class="num">${r.total}/${r.maxTotal}</td>
-      <td class="num">${Math.round(r.total/r.maxTotal*100)}%</td>
+      <td class="num">${pct(r.total,r.maxTotal)}%</td>
       <td class="num">${r.grade}</td>
     </tr>`).join("");
 }
 
 function selectPaper(i) {
   renderMarksPanel(allRecords[i], i===0);
+  renderReview(allRecords[i]);
   document.getElementById("marksPanel").scrollIntoView({ behavior:"smooth", block:"start" });
 }
 
-// ── Download PDF ──────────────────────────────
+// ── Paper analysis ─────────────────────────────
+function renderPaperAnalysis(stats, classStats) {
+  const qs = stats.questions;
+  if (!qs || qs.length === 0) return;
+
+  document.getElementById("paperAnalysisSection").style.display = "block";
+
+  // Summary row
+  const totalAttempted = qs.reduce((s,q) => s + q.attempted, 0);
+  const totalCorrect   = qs.reduce((s,q) => s + q.correct, 0);
+  const avgSuccessRate = Math.round(qs.reduce((s,q) => s + (q.attempted>0?(q.correct/q.attempted)*100:0), 0) / qs.length);
+  const hardestQ       = [...qs].sort((a,b) => (a.correct/Math.max(a.attempted,1)) - (b.correct/Math.max(b.attempted,1)))[0];
+
+  document.getElementById("paperSummaryRow").innerHTML = `
+    <div class="cc-cell"><div class="cc-val" style="color:var(--cream)">${classStats ? classStats.size : "—"}</div><div class="cc-lbl">Students</div></div>
+    <div class="cc-cell"><div class="cc-val" style="color:var(--blue)">${classStats ? classStats.average : "—"}</div><div class="cc-lbl">Class Avg</div></div>
+    <div class="cc-cell"><div class="cc-val" style="color:var(--green)">${classStats ? classStats.highest : "—"}</div><div class="cc-lbl">Highest</div></div>
+    <div class="cc-cell"><div class="cc-val" style="color:var(--red)">${avgSuccessRate}%</div><div class="cc-lbl">Avg Success</div></div>`;
+
+  // Question chart
+  destroyChart("questionChart");
+  const qLabels = qs.map(q => `Q${q.qNo}`);
+  const qAvg    = qs.map(q => parseFloat(q.avgScore.toFixed(1)));
+  const qMax    = qs.map(q => q.maxMarks);
+  const ctx     = document.getElementById("questionChart").getContext("2d");
+  chartInstances["questionChart"] = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: qLabels,
+      datasets: [
+        {
+          label     : "Avg Score",
+          data      : qAvg,
+          backgroundColor: "rgba(96,165,250,0.7)",
+          borderColor    : "rgba(96,165,250,1)",
+          borderWidth    : 1,
+          borderRadius   : 4
+        },
+        {
+          label     : "Max Marks",
+          data      : qMax,
+          backgroundColor: "rgba(212,168,67,0.15)",
+          borderColor    : "rgba(212,168,67,0.5)",
+          borderWidth    : 1,
+          borderRadius   : 4,
+          type      : "bar"
+        }
+      ]
+    },
+    options: {
+      responsive         : true,
+      maintainAspectRatio: false,
+      plugins: { legend: { labels: { boxWidth: 12 } } },
+      scales : {
+        x: { grid: { color: "rgba(212,168,67,0.07)" } },
+        y: { grid: { color: "rgba(212,168,67,0.07)" }, beginAtZero: true }
+      }
+    }
+  });
+
+  // Table
+  document.getElementById("qaBody").innerHTML = qs.map(q => {
+    const rate      = q.attempted > 0 ? Math.round((q.correct/q.attempted)*100) : 0;
+    const rateClass = rate >= 70 ? "rate-high" : rate >= 40 ? "rate-mid" : "rate-low";
+    const aPct      = q.attempted > 0 ? Math.round((q.attempted / (classStats ? classStats.size : q.attempted)) * 100) : 0;
+    return `<tr>
+      <td class="num">Q${q.qNo}</td>
+      <td>${q.topic || q.qName}</td>
+      <td class="num">${q.maxMarks}</td>
+      <td>
+        <div class="attempt-bar-wrap">
+          <div class="attempt-bar"><div class="attempt-bar-fill" style="width:${aPct}%"></div></div>
+          <span class="num">${q.attempted}</span>
+        </div>
+      </td>
+      <td class="num">${q.correct}</td>
+      <td class="num">${q.avgScore}</td>
+      <td class="num ${rateClass}">${rate}%</td>
+    </tr>`;
+  }).join("");
+}
+
+// ── Charts ─────────────────────────────────────
+function renderTrendChart(records) {
+  const reversed = [...records].reverse();
+  const labels   = reversed.map(r => r.paper.length > 12 ? r.paper.substring(0,12)+"…" : r.paper);
+  const scores   = reversed.map(r => pct(r.total, r.maxTotal));
+
+  destroyChart("trendChart");
+  const ctx = document.getElementById("trendChart").getContext("2d");
+  chartInstances["trendChart"] = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [{
+        label          : "Score %",
+        data           : scores,
+        borderColor    : "#d4a843",
+        backgroundColor: "rgba(212,168,67,0.08)",
+        pointBackgroundColor: "#d4a843",
+        pointRadius    : 5,
+        pointHoverRadius: 7,
+        tension        : 0.35,
+        fill           : true,
+        borderWidth    : 2
+      }]
+    },
+    options: {
+      responsive         : true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.parsed.y}%`
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: "rgba(212,168,67,0.07)" } },
+        y: {
+          grid      : { color: "rgba(212,168,67,0.07)" },
+          min       : 0, max: 100,
+          ticks     : { callback: v => v + "%" }
+        }
+      }
+    }
+  });
+}
+
+function renderCompareChart(rec) {
+  const youPct  = pct(rec.total, rec.maxTotal);
+  const avgPct  = rec.classAverage ? pct(rec.classAverage, rec.maxTotal) : 0;
+  const highPct = rec.classHighest ? pct(rec.classHighest, rec.maxTotal) : 0;
+
+  destroyChart("compareChart");
+  const ctx = document.getElementById("compareChart").getContext("2d");
+  chartInstances["compareChart"] = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["You", "Class Avg", "Highest"],
+      datasets: [{
+        data           : [youPct, avgPct, highPct],
+        backgroundColor: ["rgba(212,168,67,0.8)", "rgba(96,165,250,0.6)", "rgba(74,222,128,0.6)"],
+        borderColor    : ["#d4a843", "#60a5fa", "#4ade80"],
+        borderWidth    : 1,
+        borderRadius   : 6
+      }]
+    },
+    options: {
+      responsive         : true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { grid: { color: "rgba(212,168,67,0.07)" }, min: 0, max: 100, ticks: { callback: v => v + "%" } }
+      }
+    }
+  });
+}
+
+function renderPartsChart(records) {
+  const reversed = [...records].reverse();
+  const labels   = reversed.map(r => r.paper.length > 10 ? r.paper.substring(0,10)+"…" : r.paper);
+  const pAData   = reversed.map(r => pct(r.partA, r.maxA));
+  const pBData   = reversed.map(r => pct(r.partB, r.maxB));
+
+  destroyChart("partsChart");
+  const ctx = document.getElementById("partsChart").getContext("2d");
+  chartInstances["partsChart"] = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [
+        {
+          label          : "Part A %",
+          data           : pAData,
+          backgroundColor: "rgba(192,132,252,0.6)",
+          borderColor    : "#c084fc",
+          borderWidth    : 1,
+          borderRadius   : 4
+        },
+        {
+          label          : "Part B %",
+          data           : pBData,
+          backgroundColor: "rgba(96,165,250,0.6)",
+          borderColor    : "#60a5fa",
+          borderWidth    : 1,
+          borderRadius   : 4
+        }
+      ]
+    },
+    options: {
+      responsive         : true,
+      maintainAspectRatio: false,
+      plugins: { legend: { labels: { boxWidth: 12 } } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { grid: { color: "rgba(212,168,67,0.07)" }, min: 0, max: 100, ticks: { callback: v => v + "%" } }
+      }
+    }
+  });
+}
+
+// ── Download PDF ───────────────────────────────
 async function downloadReview() {
   const btn = document.getElementById("dlBtn");
   btn.textContent = "Generating…";
@@ -481,7 +721,6 @@ async function downloadReview() {
   try {
     const res  = await fetch(`${API_URL}?action=getPDF&query=${encodeURIComponent(currentQuery)}`);
     const data = await res.json();
-
     if (data.error) { setError(data.error); }
     else {
       const bytes = atob(data.pdf);
@@ -492,23 +731,20 @@ async function downloadReview() {
       a.href = url; a.download = data.filename; a.click();
       URL.revokeObjectURL(url);
     }
-  } catch(e) {
-    setError("PDF generation failed. Please try again.");
-  }
+  } catch(e) { setError("PDF generation failed. Please try again."); }
 
   btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download Latest Review`;
   btn.style.opacity = "1";
   btn.disabled = false;
 }
 
-// ── Helpers ───────────────────────────────────
+// ── Helpers ────────────────────────────────────
+function pct(a, b) { return b > 0 ? Math.round((a/b)*100) : 0; }
 function showSpinner(on) { document.getElementById("spinnerWrap").style.display = on?"flex":"none"; }
-function setError(msg)   { const b=document.getElementById("errorBox"); b.textContent=msg; b.style.display=msg?"block":"none"; }
-function setSearchBtn(loading) {
-  const b = document.getElementById("searchBtn");
-  b.textContent = loading ? "Searching…" : "Search";
-  b.disabled    = loading;
-}
+function setError(msg) { const b=document.getElementById("errorBox"); b.textContent=msg; b.style.display=msg?"block":"none"; }
+function setSearchBtn(loading) { const b=document.getElementById("searchBtn"); b.textContent=loading?"Searching…":"Search"; b.disabled=loading; }
+function destroyChart(id) { if (chartInstances[id]) { chartInstances[id].destroy(); delete chartInstances[id]; } }
+function destroyCharts() { Object.keys(chartInstances).forEach(destroyChart); }
 </script>
 </body>
 </html>
